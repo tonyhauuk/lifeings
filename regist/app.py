@@ -29,18 +29,25 @@ def createUser():
                 user = User(userName, email, password)
                 retID = user.save()
                 jsonStr = error.getErrorCode(0)
-                print jsonStr
+                print (jsonStr)
                 return jsonStr
             else:
                 jsonStr = error.getErrorCode(4)
                 return jsonStr
         else:
             jsonStr = error.getErrorCode(1)
-            print jsonStr
+            print (jsonStr)
             return jsonStr
-    except VauleError:
+    except ValueError:
         print 'Return id is NONE'
 
+def queryUsers(str):
+    pass
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
+
+class User(name, email, pwd):
+    def __init__(self):
+        pass
+
