@@ -38,7 +38,7 @@ def createUser():
             print (jsonStr)
             return jsonStr
     except ValueError:
-        print 'Return id is NONE'
+        print ('Return id is NONE')
 
 
 
@@ -50,3 +50,5 @@ def queryUsers(str):
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80, debug=True)
+
+# T4k3 7H3 R35T 0F TH3 D4Y 0FF
