@@ -1,15 +1,14 @@
-from flask import request, Flask, abort, g
-from ..util import StatusCode
+from flask import request, Flask, g, current_app
+from ..util import error
 from ..util import models
 from . import api
 import hashlib
 from functools import wraps
 import random
 
-app = Flask(__name__)
-code = StatusCode()
-User = models.User
 
+app = Flask(__name__)
+code = error.StatusCode()
 
 def loginCheck(func):
     @wraps(func)
@@ -20,11 +19,17 @@ def loginCheck(func):
 # Login
 @api.route('/login', methods=['POST'])
 def login():
-    phoneNum = request.get_json().get('phone')
-    passwd = request.get_json().get('password')
-    user = 'user' # db quest    User.query.filter_by(phone_number=phone_number).first()
+    confirm, phoneNum = 0, 0
+    passwd = ''
 
-    if not user:
+    try:
+        phoneNum = int(request.get_json().get('phone'))
+        passwd = request.get_json().get('password')
+        confirm = models.Process(phoneNum).checkExistUser()
+    except Exception as e:
+        print(e)
+
+    if confirm == 0:
         msg = code.getCode(5)
         return msg
 

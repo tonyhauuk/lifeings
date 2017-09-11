@@ -1,11 +1,11 @@
 # -*-coding:UTF-8-*-
 
 from flask import Flask
-from .util import Conf
+from .util import conf
 
 def createApp():
     app = Flask(__name__)
-    app.config.from_object(Conf)
+    app.config.from_object(conf)
     app.secret_key = app.config['SECRET_KEY']
     app.debug = app.config['DEBUG']
 

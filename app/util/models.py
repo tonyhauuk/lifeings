@@ -1,44 +1,54 @@
-#! /user/bin/python
 # -*-coding:UTF-8-*-
+from .connect import Conn
+from .error import StatusCode
 
-from pymongo import MongoClient
+c = Conn()
+code = StatusCode()
 
-# from passlib.apps import custom_app_context as pwd_context
+class Process():
+    def __init__(self, data):
+        self.data = data
 
-class Conn():
-    def retDB(self):
-        connection = MongoClient()
-        connection.lifeings.authenticate('lifeings_admin', '2caa6884339980cae91ff273275a5129')
-        db = connection.lifeings
-        #user = db.User
-        #connection.close()
+    def checkExistUser(self):
+        db = c.connect()
+        user = db.User
+        isExist = user.find_one({'mobile': self.data})
 
-        return db
+        if isExist is None:
+            result = 0
+        else:
+            result = 1
 
-db = Conn()
+        c.close()
 
-class User(object, db):
-    def __init__(self, userName, email, pwd):
-        self.userName = userName
-        self.email = email
-        self.pwd = pwd
+        return result
 
-    '''
-    def hashPassword(self, password):
-    self.pwd = pwd_context.encrypt(password)
+    def insert(self, collection = None):
+        if collection == None:
+            return code.getCode(2)
+        else:
+            sql = self.data
+            coll = self.getCol(collection)
+            c.connect()
+            coll.insert(sql)
+            c.close()
 
-    def verifyPassword(self, password):
-    return pwd_context.verify(password, self.pwd)
-    '''
 
-    def save(self, db):
-        user = {'userName': self.userName, 'email': self.email, 'pwd': self.pwd}
-        userColl = db.User
-        retID = coll.insert(user)
-        db.close()
-        return retID
+    def delete(self):
+        pass
 
-    @staticmethod
-    def queryUsers(email, db):
-        user = getColl.findOne({"email": email})
-        return user
+    def update(self):
+        pass
+
+    def find(self):
+        pass
+
+    # Get collection name
+    def getCol(self, collection):
+        db = c.connect()
+        name = db.get_collection(collection)
+        c.close()
+
+        return name
+
+

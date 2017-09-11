@@ -1,9 +1,7 @@
 # -*-coding:UTF-8-*-
 
-import json
 import time
 from flask import jsonify
-
 
 class StatusCode():
 
