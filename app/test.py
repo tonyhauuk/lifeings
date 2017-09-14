@@ -1,17 +1,18 @@
 from pymongo import MongoClient
+#from flask import jsonify
+from flask import Flask
+import json
+import random
+import uuid
+from app.util.verify import *
+from app.util.connect import Conn
+import time
+import datetime
 
+c = Conn()
 
-def connect():
-    client = MongoClient('123.56.71.98:27017')
-    db = client.lifeings
-    db.authenticate('lifeingsAdmin', 'a9270ae592bd52cceb7e7736a434506d')
+app = Flask(__name__)
 
-    return db
-
-
-def close():
-    client = MongoClient('123.56.71.98:27017')
-    client.close()
 
 
 def checkExistUser():
@@ -45,7 +46,55 @@ def getCol(collection = None):
         return name
 
 
-if __name__ == '__main__':
+
+def insert():
     connect()
-    r = checkExistUser()
+    ss = "{'userName': 'wangxiao','userID':1,'email': 'wangxiao@estarinfo.net','mobile': '13261593150','password': '800915'," \
+         "'birthday': '','city': 'Beijing', 'token': 'q938479r8uasfijda8shd9f8a9sdfha','expire': 1505121083000}"
+    sql = json.dumps(ss)
+    coll =  getCol('User')
+    r = coll.insert(sql)
+    print('ret status:  ' + r)
+    close()
+
+def ran():
+    #r = random.randint(1000, 10000)
+    r = uuid.uuid1()
+    print(r)
+
+
+def send():
+    template_code = 'SMS_95510025'
+    sign_name = '城市生活'
+    verify = str(random.randint(1000, 10000))
+    phone = str(13261593150)
+
+    __business_id = uuid.uuid1()
+    print(__business_id)
+
+    params = '{\"verify\":' + verify + '}'
+    print(send_sms(__business_id, phone, sign_name, template_code, params))
+
+    time = datetime.datetime.now().strftime('%Y%m%d')
+
+    print (query_send_detail(__business_id, phone, 10, 1, time))
+
+if __name__ == '__main__':
+    time = datetime.datetime.now().strftime('%Y%m%d')
+    #print(time)
+
+    send()
+    #a = c.connect().City.find_one()
+   # print(a)
+    #ran()
+   #insert()
+
+    #connect()
+    #r = checkExistUser()
    # print(r)
+
+
+
+
+
+

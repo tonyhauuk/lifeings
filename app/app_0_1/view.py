@@ -1,10 +1,14 @@
 from flask import request, Flask, g, current_app
-from ..util import error
-from ..util import models
+from app.util import error
+from app.util import models
 from . import api
 import hashlib
 from functools import wraps
 import random
+import datetime
+import uuid
+from app.util.verify import *
+
 
 
 app = Flask(__name__)
@@ -23,7 +27,7 @@ def login():
     passwd = ''
 
     try:
-        phoneNum = int(request.get_json().get('phone'))
+        phoneNum = request.get_json().get('phone')
         passwd = request.get_json().get('password')
         confirm = models.Process(phoneNum).checkExistUser()
     except Exception as e:
@@ -70,14 +74,22 @@ def setAvatar():
 # Receive sms
 @api.route('/reg-1', methods=['POST'])
 def receiveSMS():
-    phoneNum = request.get_json().get('phone')
+    phone = request.get_json().get('phone')
     user = User.query.filter_by(phoneNum = phoneNum).first()
+
 
     if user:
         msg = code.getCode(4)
         return msg
 
-    validateNum = str(random.randint(1000, 10000))
+
+    template_code = 'SMS_95510025'
+    sign_name = '城市生活'
+    verify = str(random.randint(1000, 10000))
+    bid = uuid.uuid1()
+    params = '{\"verify\":' + verify + '}'
+
+    sendRet = send_sms(bid, phone, sign_name, template_code, params)
 
     '''
         write db

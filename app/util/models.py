@@ -1,6 +1,6 @@
 # -*-coding:UTF-8-*-
-from .connect import Conn
-from .error import StatusCode
+from app.util.connect import Conn
+from app.util.error import StatusCode
 
 c = Conn()
 code = StatusCode()
