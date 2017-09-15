@@ -1,13 +1,17 @@
 from pymongo import MongoClient
-#from flask import jsonify
+from flask import jsonify
 from flask import Flask
 import json
 import random
 import uuid
-from app.util.verify import *
 from app.util.connect import Conn
 import time
 import datetime
+import json
+import urllib
+import urllib.request as req
+
+
 
 c = Conn()
 
@@ -79,11 +83,46 @@ def send():
 
     print (query_send_detail(__business_id, phone, 10, 1, time))
 
+
+def get():
+
+
+    data = {}
+    data['mobile'] = '13261593150'
+    data['verify'] = str(random.randint(1000, 10000))
+    data['uuid'] = uuid.uuid1()
+    print(data)
+    print('\n\n\n')
+
+    params = urllib.parse.urlencode(data)
+    url = 'http://www.estar360.com/lifeings/send_sms/sendsms.php?' + params
+    ret = req.urlopen(url).read()
+    result = ret.decode('utf-8')
+
+    print(result)
+
+def querySms(mobile):
+    data = {}
+    data['mobile'] = mobile
+
+    params = urllib.parse.urlencode(data)
+    url = 'http://www.estar360.com/lifeings/send_sms/sendsms.php?' + params
+    ret = req.urlopen(url).read()
+    result = ret.decode('utf-8')
+
+    parse = json.loads(result)
+    print(parse)
+    #print(result)
+
+
+
 if __name__ == '__main__':
-    time = datetime.datetime.now().strftime('%Y%m%d')
+    querySms(13261593150)
+    #get()
+    #time = datetime.datetime.now().strftime('%Y%m%d')
     #print(time)
 
-    send()
+    #send()
     #a = c.connect().City.find_one()
    # print(a)
     #ran()

@@ -1,18 +1,17 @@
+# -*-coding:UTF-8-*-
 from flask import request, Flask, g, current_app
-from app.util import error
-from app.util import models
+from app.util.error import StatusCode
+from app.util.models import Process
 from . import api
 import hashlib
 from functools import wraps
 import random
 import datetime
 import uuid
-from app.util.verify import *
-
 
 
 app = Flask(__name__)
-code = error.StatusCode()
+code = StatusCode()
 
 def loginCheck(func):
     @wraps(func)
@@ -29,7 +28,7 @@ def login():
     try:
         phoneNum = request.get_json().get('phone')
         passwd = request.get_json().get('password')
-        confirm = models.Process(phoneNum).checkExistUser()
+        confirm = Process(phoneNum).checkExistUser()
     except Exception as e:
         print(e)
 
@@ -90,6 +89,9 @@ def receiveSMS():
     params = '{\"verify\":' + verify + '}'
 
     sendRet = send_sms(bid, phone, sign_name, template_code, params)
+
+    time = datetime.datetime.now().strftime('%Y%m%d')
+    details = query_send_detail(bid, phone, 1, 1, time)
 
     '''
         write db

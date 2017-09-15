@@ -1,1 +1,1 @@
-__all__ = ['conf', 'connect', 'error', 'models', 'verify', 'util']
+__all__ = ['conf', 'connect', 'error', 'models', 'util']
