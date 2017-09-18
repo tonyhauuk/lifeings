@@ -7,7 +7,7 @@ import hashlib
 from functools import wraps
 import random
 import datetime
-import uuid
+from app.util.util import *
 
 
 app = Flask(__name__)
@@ -70,28 +70,40 @@ def setAvatar():
     return msg
 
 
-# Receive sms
+# Send sms
 @api.route('/reg-1', methods=['POST'])
+def sendSMS():
+    phone = request.get_json().get('phone')
+    user = User.query.filter_by(phoneNum = phoneNum).first()
+
+
+    if not user:
+        msg = code.getCode(4)
+        return msg
+
+    send = sendSms(phone)
+    if send == 'OK':
+        return code.getCode(0)
+    else:
+        return code.getCode(12)
+
+
+# Receive sms
+@api.route('/reg-2', methods=['POST'])
 def receiveSMS():
     phone = request.get_json().get('phone')
     user = User.query.filter_by(phoneNum = phoneNum).first()
 
 
-    if user:
+    if not user:
         msg = code.getCode(4)
         return msg
 
 
-    template_code = 'SMS_95510025'
-    sign_name = '城市生活'
-    verify = str(random.randint(1000, 10000))
-    bid = uuid.uuid1()
-    params = '{\"verify\":' + verify + '}'
 
-    sendRet = send_sms(bid, phone, sign_name, template_code, params)
 
-    time = datetime.datetime.now().strftime('%Y%m%d')
-    details = query_send_detail(bid, phone, 1, 1, time)
+    receive = querySms(phone)
+
 
     '''
         write db
@@ -102,7 +114,7 @@ def receiveSMS():
 
 
 # Validate sms
-@api.route('/reg-2', methods=['POST'])
+@api.route('/reg-3', methods=['POST'])
 def verifySMS():
     phoneNum = request.get_json().get('phone')
     validateNum = request.get_json().get('validate number')
@@ -122,7 +134,7 @@ def verifySMS():
 
 
 # Commit password
-@api.route('/reg-3', methods=['POST'])
+@api.route('/reg-4', methods=['POST'])
 def commitPasswd():
     phoneNum = request.get_json().get('phone')
     passwd = request.get_json().get('password')

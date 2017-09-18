@@ -67,32 +67,14 @@ def ran():
     print(r)
 
 
+
 def send():
-    template_code = 'SMS_95510025'
-    sign_name = '城市生活'
-    verify = str(random.randint(1000, 10000))
-    phone = str(13261593150)
-
-    __business_id = uuid.uuid1()
-    print(__business_id)
-
-    params = '{\"verify\":' + verify + '}'
-    print(send_sms(__business_id, phone, sign_name, template_code, params))
-
-    time = datetime.datetime.now().strftime('%Y%m%d')
-
-    print (query_send_detail(__business_id, phone, 10, 1, time))
-
-
-def get():
 
 
     data = {}
     data['mobile'] = '13261593150'
     data['verify'] = str(random.randint(1000, 10000))
-    data['uuid'] = uuid.uuid1()
-    print(data)
-    print('\n\n\n')
+    #data['uuid'] = uuid.uuid1()
 
     params = urllib.parse.urlencode(data)
     url = 'http://www.estar360.com/lifeings/send_sms/sendsms.php?' + params
@@ -100,6 +82,7 @@ def get():
     result = ret.decode('utf-8')
 
     print(result)
+
 
 def querySms(mobile):
     data = {}
@@ -110,15 +93,13 @@ def querySms(mobile):
     ret = req.urlopen(url).read()
     result = ret.decode('utf-8')
 
-    parse = json.loads(result)
-    print(parse)
-    #print(result)
-
-
+    print(result)
 
 if __name__ == '__main__':
+    #send()
+
     querySms(13261593150)
-    #get()
+
     #time = datetime.datetime.now().strftime('%Y%m%d')
     #print(time)
 

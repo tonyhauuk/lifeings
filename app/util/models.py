@@ -40,8 +40,18 @@ class Process():
     def update(self):
         pass
 
-    def find(self):
-        pass
+    def find(self, collection = None):
+        if collection == None:
+            return code.getCode(2)
+        else:
+            sql = self.data
+            coll = self.getCol(collection)
+            c.connect()
+            result = coll.find(sql)
+            c.close()
+
+            return result
+
 
     # Get collection name
     def getCol(self, collection):

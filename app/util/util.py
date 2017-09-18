@@ -13,7 +13,7 @@ def sendSms(mobile):
     ret = req.urlopen(url).read()
     result = ret.decode('utf-8')
 
-    print(result)
+    return result
 
 def querySms(mobile):
     data = {}
@@ -24,4 +24,4 @@ def querySms(mobile):
     ret = req.urlopen(url).read()
     result = ret.decode('utf-8')
 
-    print(result)
+    return result

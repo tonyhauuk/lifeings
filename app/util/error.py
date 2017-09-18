@@ -4,7 +4,6 @@ import time
 from flask import jsonify
 
 class StatusCode():
-
     def getCode(self, code):
         if code == 0:
             obj = {'code': 0, 'message': 'success', 'date': time.time()}
@@ -63,5 +62,10 @@ class StatusCode():
 
         elif code == 11:
             obj = {'code': 11, 'message': 'validation failed'}
+            jsonStr = jsonify(obj)
+            return jsonStr
+
+        elif code == 12:
+            obj = {'code': 12, 'message': 'send failed'}
             jsonStr = jsonify(obj)
             return jsonStr
