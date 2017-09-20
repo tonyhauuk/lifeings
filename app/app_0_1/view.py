@@ -1,17 +1,18 @@
 # -*-coding:UTF-8-*-
-from flask import request, Flask, g, current_app
-from app.util.error import StatusCode
+
+from flask import request, Flask, g, jsonify
+from app.util.error import getCode
 from app.util.models import Process
 from . import api
 import hashlib
 from functools import wraps
-import random
-import datetime
 from app.util.util import *
+import time
 
 
 app = Flask(__name__)
-code = StatusCode()
+p = Process()
+
 
 def loginCheck(func):
     @wraps(func)
@@ -26,19 +27,19 @@ def login():
     passwd = ''
 
     try:
-        phoneNum = request.get_json().get('phone')
-        passwd = request.get_json().get('password')
-        confirm = Process(phoneNum).checkExistUser()
+        phone = request.get_json().get('phone')
+        password = request.get_json().get('password')
+        confirm = p.checkExistUser(phone)
     except Exception as e:
         print(e)
 
     if confirm == 0:
-        msg = code.getCode(5)
-        return msg
+        return getCode(5)
+        
 
     if passwd != passwd: # user.password
-        msg = code.getCode(1)
-        return msg
+        return getCode(1)
+        
 
     m = hashlib.md5()
     m.update(phoneNum)
@@ -46,8 +47,8 @@ def login():
 
     token = m.hexdigest()
 
-    msg = code.getCode(0)
-    return msg
+    return getCode(0)
+    
 
 
 # Upload avatar
@@ -61,105 +62,97 @@ def setAvatar():
         pass    # db commit
     except Exception as e:
         print(e)
-        msg = code.getCode(8)
-
-        return msg
+        return getCode(8)
+        
 
     # db commit photo upload
-    msg = code.getCode(0)
-    return msg
+    return getCode(0)
+    
 
 
 # Send sms
 @api.route('/reg-1', methods=['POST'])
 def sendSMS():
-    phone = request.get_json().get('phone')
-    user = User.query.filter_by(phoneNum = phoneNum).first()
+    phone = str(request.get_json().get('phone'))
+    index = phone.find('1')
 
+    if phone == '' or len(phone) < 11 or index != 0:
+        return getCode(11)
 
-    if not user:
-        msg = code.getCode(4)
-        return msg
+    confirm = p.checkExistUser(phone)
 
-    send = sendSms(phone)
+    if confirm == 1:
+        return getCode(13)
+
+    validate = str(random.randint(1000, 10000))
+    send = sendSms(phone, validate)
+
     if send == 'OK':
-        return code.getCode(0)
+        obj = {'verification': validate, 'mobile': phone}
+        data = jsonify(obj)
+        p.insert(data, 'User')
+
+        return getCode(0)
     else:
-        return code.getCode(12)
+        return getCode(12)
 
 
-# Receive sms
+# Receive sms & validate sms
 @api.route('/reg-2', methods=['POST'])
 def receiveSMS():
     phone = request.get_json().get('phone')
-    user = User.query.filter_by(phoneNum = phoneNum).first()
+    validateCode = request.get_json().get('validate')
 
+    # Get db verification info
+    dates = {'mobile': phone}
+    condition = {'verification': 1, '_id': 0}
+    validate = p.findByCondition(dates, condition, 'User')
+    code = validate['verification']
 
-    if not user:
-        msg = code.getCode(4)
-        return msg
+    index = phone.find('1')
+    if phone == '' or len(phone) < 11 or index != 0:
+        return getCode(11)
 
+    confirm = p.checkExistUser(phone)
+    currentTime = time.time()
 
+    if confirm == 1:
+        return getCode(13) # exist
 
+    recvTime = querySms(phone)
+    st = time.strptime(recvTime, "%Y-%m-%d %H:%M:%S")
+    timeStamp = int(recvTime.mktime(st)) + 300
 
-    receive = querySms(phone)
-
-
-    '''
-        write db
-    '''
-
-    msg = code.getCode(0)
-    return msg
-
-
-# Validate sms
-@api.route('/reg-3', methods=['POST'])
-def verifySMS():
-    phoneNum = request.get_json().get('phone')
-    validateNum = request.get_json().get('validate number')
-    validateMongoDB = ''
-
-    if validateNum != validateMongoDB:
-        msg = code.getCode(3)
-        return msg
-
-    '''
-        db commit
-        把验证信息写入数据库，提交密码时候需要验证是否通过
-    '''
-
-    msg = code.getCode(0)
-    return msg
+    if currentTime < timeStamp and code == validateCode:
+        return getCode(0)
+    else:
+        return getCode(3)
 
 
 # Commit password
-@api.route('/reg-4', methods=['POST'])
+@api.route('/reg-3', methods=['POST'])
 def commitPasswd():
-    phoneNum = request.get_json().get('phone')
-    passwd = request.get_json().get('password')
+    phone = request.get_json().get('phone')
+    password = request.get_json().get('password')
     confirm = request.get_json().get('password confirm')
 
-    if len(passwd) < 6:
-        msg = code.getCode(9)
-        return msg
+    if len(password) < 6:
+        return getCode(9)
+        
 
-    if passwd != confirm:
-        msg = code.getCode(10)
-        return msg
+    if password != confirm:
+        return getCode(10)
+        
 
     isValidate = '数据库获取的验证通过信息(用 phoneNum)'
 
     if isValidate != 1:
-        msg = code.getCode(11)
-        return msg
+        return getCode(11)
+        
 
     '''
         数据库提交密码
     '''
 
-    msg = code.getCode(0)
-    return msg
-
-
-
+    return getCode(0)
+    

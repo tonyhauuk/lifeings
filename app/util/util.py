@@ -3,10 +3,10 @@ import urllib
 import urllib.request as req
 import random
 
-def sendSms(mobile):
+def sendSms(mobile, verify):
     data = {}
     data['mobile'] = mobile
-    data['verify'] = str(random.randint(1000 ,10000))
+    data['verify'] = verify
 
     params = urllib.parse.urlencode(data)
     url = 'http://www.estar360.com/lifeings/send_sms/sendsms.php?' + params
