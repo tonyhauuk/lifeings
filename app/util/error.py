@@ -4,9 +4,9 @@ import time
 from flask import jsonify
 
 
-def getCode(code, t = time.time()):
+def getCode(code, ts = str(round(time.time()))):
     if code == 0:
-        obj = {'code': 0, 'message': 'success', 'date': t}
+        obj = {'code': 0, 'message': 'success', 'date': ts}
         jsonStr = jsonify(obj)
         return jsonStr
 

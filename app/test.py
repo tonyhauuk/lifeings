@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from gridfs import *
 from flask import jsonify
 from flask import Flask
 import json
@@ -11,6 +12,9 @@ import json
 import urllib
 import urllib.request as req
 from app.util.models import Process
+import pprint
+from app.util.error import getCode
+
 
 c = Conn()
 p = Process()
@@ -22,9 +26,9 @@ def checkExistUser1():
     n = int('13261593150')
     isExist = user.find_one({'mobile': n})
 
-    s = getCol('City').find_one()
-    print(s)
-
+    s = p.getCol('User').find_one()
+    #print(s)
+    pprint.pprint(s)
     #print(isExist)
 
 
@@ -126,8 +130,76 @@ def findStrIndex():
     n = m.find('1')
     print(n)
 
+
+
+def setUpdate():
+    data = {'mobile': '13261593150'}
+    set = {'birthday': 1}
+    coll = p.getCol('User')
+    result = coll.update(data, {'$set': set})
+    #result = result['updatedExisting']
+
+    if result:
+        pprint.pprint(result)
+    elif not result:
+        print(2)
+
+    #print(result)
+
+    #print(p.find(data , 'User'))
+
+
+def comfirmd():
+    phone = '13261593150'
+    data = {'mobile': phone}
+    condition = {'isValidate': 1, '_id': 0}
+    info = p.findByCondition(data, condition, 'User')
+    isValidate = info['isValidate']
+
+
+
+    if isValidate != 1:
+        return getCode(11)
+    elif isValidate == 1:
+        return 'ok'
+
+
+def insert111():
+    validate = '5599'
+    phone = '13811300144'
+    obj = {'verification': validate, 'mobile': phone}
+    #data = jsonify(obj)
+    p.insert(obj, 'User')
+
+    #pprint.pprint(p.find({'mobile': phone}, 'User'))
+    try:
+        data = {'mobile': phone}
+        condition = {'isValidate': 1, '_id': 0}
+        info = p.findByCondition(data, condition, 'User')
+        isValidate = info['isValidate']
+    except KeyError as e:
+        print('mei you')
+
+        #print(isValidate)
+
+def findInfos():
+    r = p.find({'mobile': '13811300144'}, 'User')
+    pprint.pprint(r)
+
+def test1():
+    a = 'sdfsdfsdfsdf'
+    return a
+
+
+def test2():
+    return test1()
+
 if __name__ == '__main__':
-    findfind()
+    print(test2())
+    # findInfos()
+
+    #setUpdate()
+    #findfind()
     #findStrIndex()
     #getType()
     #time2str()
@@ -148,13 +220,16 @@ if __name__ == '__main__':
    # print(a)
     #ran()
    #insert()
-
+    #checkExistUser1()
     #connect()
     #r = checkExistUser()
    # print(r)
+    #print(comfirmd())
+    #insert111()
 
 
-
-
+class t:
+    def sss(self):
+        raise Exception
 
 

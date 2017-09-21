@@ -80,16 +80,23 @@ def sendSMS():
         return getCode(11)
 
     confirm = p.checkExistUser(phone)
+    try:
+        data = {'mobile': phone}
+        condition = {'isValidate': 1, '_id': 0}
+        info = p.findByCondition(data, condition, 'User')
+        isValidate = info['isValidate']
+    except KeyError:
+        isValidate = 0
 
-    if confirm == 1:
+
+    if confirm == 1 and isValidate == 1:
         return getCode(13)
 
     validate = str(random.randint(1000, 10000))
     send = sendSms(phone, validate)
 
     if send == 'OK':
-        obj = {'verification': validate, 'mobile': phone}
-        data = jsonify(obj)
+        data = {'verification': validate, 'mobile': phone}
         p.insert(data, 'User')
 
         return getCode(0)
@@ -104,9 +111,9 @@ def receiveSMS():
     validateCode = request.get_json().get('validate')
 
     # Get db verification info
-    dates = {'mobile': phone}
+    data = {'mobile': phone}
     condition = {'verification': 1, '_id': 0}
-    validate = p.findByCondition(dates, condition, 'User')
+    validate = p.findByCondition(data, condition, 'User')
     code = validate['verification']
 
     index = phone.find('1')
@@ -124,7 +131,15 @@ def receiveSMS():
     timeStamp = int(recvTime.mktime(st)) + 300
 
     if currentTime < timeStamp and code == validateCode:
-        return getCode(0)
+        data = {'mobile': phone}
+        setter = {'isValidate': 1}
+        results = p.setUpdate(data, setter, 'User')
+        result = results['updatedExisting']
+
+        if result:
+            return getCode(0)
+        else:
+            return  getCode(3)
     else:
         return getCode(3)
 
@@ -134,7 +149,7 @@ def receiveSMS():
 def commitPasswd():
     phone = request.get_json().get('phone')
     password = request.get_json().get('password')
-    confirm = request.get_json().get('password confirm')
+    confirm = request.get_json().get('confirm')
 
     if len(password) < 6:
         return getCode(9)
@@ -142,17 +157,25 @@ def commitPasswd():
 
     if password != confirm:
         return getCode(10)
-        
 
-    isValidate = '数据库获取的验证通过信息(用 phoneNum)'
+    try:
+        data = {'mobile': phone}
+        condition = {'isValidate': 1, '_id': 0}
+        info = p.findByCondition(data, condition, 'User')
+        isValidate = info['isValidate']
 
-    if isValidate != 1:
-        return getCode(11)
-        
+        if isValidate != 1:
+            return getCode(11)
 
-    '''
-        数据库提交密码
-    '''
+        m = hashlib.md5()
+        m.update(phone)
+        token = m.hexdigest()
+
+        setter = {'password': password, 'token': token}
+        results = p.setUpdate(data, setter, 'User')
+        result = results['updatedExisting']
+    except:
+        return getCode(4)
 
     return getCode(0)
     
