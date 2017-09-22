@@ -17,38 +17,55 @@ p = Process()
 def loginCheck(func):
     @wraps(func)
     def decorator(*args, **kwargs):
-        pass
+        token = request.headers.get('token')
+        if not token:
+            return getCode(3)
 
+        return func(*args, **kwargs)
+    return decorator
 
 # Login
 @api.route('/login', methods=['POST'])
 def login():
-    confirm, phoneNum = 0, 0
-    passwd = ''
-
+    confirm = -1
+    password, pwd, phone = '', '', ''
     try:
         phone = request.get_json().get('phone')
         password = request.get_json().get('password')
         confirm = p.checkExistUser(phone)
+        data = {'mobile': phone}
+        setter = {'password': 1, '_id': 0}
+        pwd = p.findByCondition(data, setter, 'User')
     except Exception as e:
         print(e)
 
     if confirm == 0:
         return getCode(5)
-        
 
-    if passwd != passwd: # user.password
+    if password != pwd:
         return getCode(1)
         
 
     m = hashlib.md5()
-    m.update(phoneNum)
-    m.update(passwd)
-
+    m.update(phone)
     token = m.hexdigest()
 
-    return getCode(0)
-    
+    try:
+        aging = 3600 * 24 * 30
+        t = round(time.time())
+        data = {'mobile': phone}
+        setter = {'token': token, 'expire': t + aging}
+        results = p.setUpdate(data, setter, 'User')
+        result = results['updatedExisting']
+
+        if result:
+            data = {'mobile': phone}
+            infos = p.find(data, 'User')
+            nickname = infos['nickname']
+            msg = {'code': 0, 'message': 'success', 'nickname': nickname, 'token': token}
+            return msg
+    except:
+        return getCode(8)
 
 
 # Upload avatar
@@ -67,7 +84,6 @@ def setAvatar():
 
     # db commit photo upload
     return getCode(0)
-    
 
 
 # Send sms
@@ -171,11 +187,14 @@ def commitPasswd():
         m.update(phone)
         token = m.hexdigest()
 
-        setter = {'password': password, 'token': token}
+        setter = {'password': password, 'token': token, 'nickname': phone}
         results = p.setUpdate(data, setter, 'User')
         result = results['updatedExisting']
+
+        if not result:
+            return getCode(4)
     except:
         return getCode(4)
 
+
     return getCode(0)
-    

@@ -46,7 +46,7 @@ def getCode(code, ts = str(round(time.time()))):
         return jsonStr
 
     elif code == 8:
-        obj = {'code': 8, 'message': 'upload failed'}
+        obj = {'code': 8, 'message': 'failed'}
         jsonStr = jsonify(obj)
         return jsonStr
 

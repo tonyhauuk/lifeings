@@ -183,7 +183,11 @@ def insert111():
         #print(isValidate)
 
 def findInfos():
-    r = p.find({'mobile': '13811300144'}, 'User')
+    """
+
+    :rtype: object
+    """
+    r = p.find({'mobile': '13261593150'}, 'User')
     pprint.pprint(r)
 
 def test1():
@@ -194,9 +198,22 @@ def test1():
 def test2():
     return test1()
 
+
+def test3():
+    raise Exception
+
+
+def calc():
+    a = 3600 * 24 * 30
+    t = round(time.time())
+    print(t + a)
+
 if __name__ == '__main__':
-    print(test2())
-    # findInfos()
+
+    #calc()
+    #test3()
+    #print(test2())
+    findInfos()
 
     #setUpdate()
     #findfind()
