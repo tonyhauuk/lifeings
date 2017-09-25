@@ -25,11 +25,10 @@ def loginCheck(func):
         return func(*args, **kwargs)
     return decorator
 
+
 # Login
 @api.route('/login', methods=['POST'])
 def login():
-    confirm = -1
-    password, pwd, phone = '', '', ''
     db = c.connect()
     try:
         phone = request.get_json().get('phone')
@@ -38,21 +37,17 @@ def login():
         data = {'mobile': phone}
         setter = {'password': 1, '_id': 0}
         pwd = Process(db).findByCondition(data, setter, 'User')
-    except Exception as e:
-        print(e)
 
-    if confirm == 0:
-        return getCode(5)
+        if confirm == 0:
+            return getCode(5)
 
-    if password != pwd:
-        return getCode(1)
-        
+        if password != pwd:
+            return getCode(1)
 
-    m = hashlib.md5()
-    m.update(phone)
-    token = m.hexdigest()
+        m = hashlib.md5()
+        m.update(phone)
+        token = m.hexdigest()
 
-    try:
         aging = 3600 * 24 * 30
         t = round(time.time())
         data = {'mobile': phone}
@@ -99,7 +94,6 @@ def sendSMS():
     if phone == '' or len(phone) < 11 or index != 0:
         return getCode(11)
 
-    confirm = 0
     db = c.connect()
     try:
         confirm = Process(db).checkExistUser(phone)
@@ -108,8 +102,8 @@ def sendSMS():
         info = Process(db).findByCondition(data, condition, 'User')
         isValidate = info['isValidate']
     except KeyError:
-        isValidate = 0
-        confirm = -1
+        c.close()
+        confirm, isValidate = -1, -1
 
 
     if confirm == 1 or isValidate == 1:
@@ -151,7 +145,7 @@ def receiveSMS():
             return getCode(11)
 
         confirm = Process(db).checkExistUser(phone)
-        currentTime = time.time()
+        currentTime = round(time.time())
 
         if confirm == 1:
             return getCode(13) # exist
@@ -166,7 +160,7 @@ def receiveSMS():
             results = Process(db).setUpdate(data, setter, 'User')
             result = results['updatedExisting']
 
-            if result:
+            if result: # true or false
                 return getCode(0)
             else:
                 return  getCode(3)

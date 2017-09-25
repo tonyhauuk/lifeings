@@ -17,7 +17,7 @@ from app.util.error import getCode
 
 
 c = Conn()
-p = Process()
+p = Process(c.connect())
 app = Flask(__name__)
 
 def checkExistUser1():
@@ -208,12 +208,26 @@ def calc():
     t = round(time.time())
     print(t + a)
 
-if __name__ == '__main__':
 
+def trycatch():
+    #r = 1
+    try :
+        with open('KEY', 'r') as f:
+            file = f.read()
+        r = 4
+    except Exception as e:
+        print(e)
+        r = 7
+
+    t = 2 * 4
+    print(r)
+
+if __name__ == '__main__':
+    trycatch()
     #calc()
     #test3()
     #print(test2())
-    findInfos()
+    #findInfos()
 
     #setUpdate()
     #findfind()
