@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cf2dfdfa-0276-4e1c-9b6e-bf232a2db5ed" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/KEY" afterPath="$PROJECT_DIR$/app/KEY" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/api_0_1/view.py" afterPath="$PROJECT_DIR$/app/api_0_1/view.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/test.py" afterPath="$PROJECT_DIR$/app/test.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/util/connect.py" afterPath="$PROJECT_DIR$/app/util/connect.py" />
     </list>
     <ignored path="untitled.iws" />
     <ignored path=".idea/workspace.xml" />
