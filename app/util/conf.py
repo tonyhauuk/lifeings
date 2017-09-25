@@ -1,4 +1,4 @@
-with open('../../../../KEY', 'r') as f:
+with open('../../../KEY', 'r') as f:
     file = f.read()
 
 class Config(object):
