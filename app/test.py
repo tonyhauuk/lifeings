@@ -23,7 +23,7 @@ app = Flask(__name__)
 def checkExistUser1():
     db = c.connect()
     user = db.User
-    n = int('13261593150')
+    n = '13261593150'
     isExist = user.find_one({'mobile': n})
 
     s = p.getCol('User').find_one()

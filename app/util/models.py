@@ -6,11 +6,14 @@ c = Conn()
 
 
 class Process():
+    def __init__(self, db):
+        self.db = db
+
+
     def insert(self, data, collection = None):
         if collection != None:
             coll = self.getCol(collection)
             coll.insert(data)
-            c.close()
         else:
             return getCode(2)
 
@@ -26,9 +29,9 @@ class Process():
     def setUpdate(self, data, setter, collection = None):
         if collection != None:
             coll = self.getCol(collection)
+
             results = coll.update(data, {'$set': setter})
             result = results['updatedExisting']
-            c.close()
 
             return result
         else:
@@ -40,7 +43,6 @@ class Process():
         if collection != None:
             coll = self.getCol(collection)
             result = coll.find_one(data)
-            c.close()
 
             return result
         else:
@@ -51,7 +53,6 @@ class Process():
         if collection != None:
             coll = self.getCol(collection)
             result = coll.find_one(data, condition)
-            c.close()
 
             return result
         else:
@@ -60,14 +61,14 @@ class Process():
 
     # Get collection name
     def getCol(self, collection):
-        db = c.connect()
+        db = self.db
         name = db.get_collection(collection)
 
         return name
 
 
     def checkExistUser(self, phone):
-        db = c.connect()
+        db = self.db
         user = db.User
         isExist = user.find_one({'mobile': phone})
 
