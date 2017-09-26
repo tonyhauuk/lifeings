@@ -214,3 +214,7 @@ def commitPasswd():
         c.close()
 
 
+@app.route('/sst', methods=['GET'])
+def strS():
+    return 'strrrrrr'
+

@@ -212,18 +212,37 @@ def calc():
 def trycatch():
     #r = 1
     try :
-        with open('KEY', 'r') as f:
+        r = 899
+        with open('!KEY', 'r') as f:
             file = f.read()
-        r = 4
+
     except Exception as e:
-        print(e)
-        r = 7
+        y = 0
+        #r = 5
+        print(r)
+        #r = 7
 
     t = 2 * 4
-    print(r)
+    #print(r)
+
+@app.route('/json')
+def getJson():
+    msg = getCode(2)
+   #print(type(msg))
+    return str(type(msg))
+
 
 if __name__ == '__main__':
-    trycatch()
+    pass
+    s = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    s = s[::-1]
+    print(s)
+
+    #app.run(debug=True, host='0.0.0.0', port=5001)
+
+    # data2 = json.loads('http://localhost:5001/json')
+    # print('code :' + data2['code'])
+    #trycatch()
     #calc()
     #test3()
     #print(test2())
@@ -262,5 +281,6 @@ if __name__ == '__main__':
 class t:
     def sss(self):
         raise Exception
+
 
 
