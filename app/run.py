@@ -1,8 +1,8 @@
 # -*-coding:UTF-8-*-
+__author__ = 'Wang Xiao'
 
 from flask import Flask
 from app.util.config import Conf
-
 
 def createApp():
     app = Flask(__name__)

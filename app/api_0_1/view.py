@@ -1,14 +1,15 @@
 # -*-coding:UTF-8-*-
 
-from flask import request, Flask, g, jsonify
+from flask import request, Flask, g
 from app.util.error import getCode
 from app.util.models import Process
-from . import api
-import hashlib
+from app.api_0_1 import api
 from functools import wraps
 from app.util.util import *
 from app.util.connect import Conn
 import time
+import random
+import hashlib
 
 
 app = Flask(__name__)
@@ -212,9 +213,3 @@ def commitPasswd():
         return getCode(4)
     finally:
         c.close()
-
-
-@app.route('/sst', methods=['GET'])
-def strS():
-    return 'strrrrrr'
-

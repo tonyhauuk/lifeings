@@ -1,7 +1,6 @@
 # -*-coding:UTF-8-*-
 import urllib
 import urllib.request as req
-import random
 
 def sendSms(mobile, verify):
     data = {}

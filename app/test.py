@@ -16,6 +16,8 @@ import pprint
 from app.util.error import getCode
 
 
+
+
 c = Conn()
 p = Process(c.connect())
 app = Flask(__name__)
@@ -73,7 +75,6 @@ def send():
     data = {}
     data['mobile'] = '13261593150'
     data['verify'] = str(random.randint(1000, 10000))
-    #data['uuid'] = uuid.uuid1()
 
     params = urllib.parse.urlencode(data)
     url = 'http://www.estar360.com/lifeings/send_sms/sendsms.php?' + params
