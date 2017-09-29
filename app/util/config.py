@@ -1,17 +1,23 @@
-class Config(object):
-    SECRET_KEY = 'ZYXWVUTSRQPONMLKJIHGFEDCBA1234567890'
+from app.key import Key
 
+key = Key.flask
+password = Key.db
+
+class Config(object):
+    SECRET_KEY = key
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    MONGODB_ADDR = '123.56.71.98:27017'
-    PASSWORD = 'a9270ae592bd52cceb7e7736a434506d'
+    MONGODB_ADDR = '123.56.71.98'
+    MONGODB_PORT = 27017
+    PASSWORD = password
 
 
 class ProductionConfig(Config):
     DEBUG = False
     MONGODB_ADDR = None
-    PASSWORD = 'a9270ae592bd52cceb7e7736a434506d'
+    MONGODB_PORT = None
+    PASSWORD = password
 
 
 Conf = DevelopmentConfig

@@ -1,13 +1,11 @@
 from pymongo import MongoClient
 from gridfs import *
-from flask import jsonify
+from flask import jsonify, request
 from flask import Flask
-import json
 import random
 import uuid
 from app.util.connect import Conn
 import time
-import datetime
 import json
 import urllib
 import urllib.request as req
@@ -232,8 +230,14 @@ def getJson():
    #print(type(msg))
     return str(type(msg))
 
+def getDBVersion():
+    db = c.connect()
+    print(db.version)
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
+
+
+    #getDBVersion()
     pass
     s = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     s = s[::-1]
@@ -277,11 +281,66 @@ if __name__ == '__main__':
    # print(r)
     #print(comfirmd())
     #insert111()
+import json
 
 
-class t:
-    def sss(self):
-        raise Exception
+class Test_0_1(object):
+    baseUrl = 'http://localhost:5001/api/v0.1'
 
 
+    def __init__(self):
+        self.headers = {}
+        self.token = None
 
+
+    def login(self, phone, password, path = '/login'):
+        load = {'phone': phone, 'password': password}
+        self.headers = {'content-type': 'application/json'}
+        response = req.Request(url = self.baseUrl + path, data = json.dumps(load), headers = self.headers)
+        resData = json.loads(response.data)
+        self.token = resData.get('token')
+        return resData
+
+
+    def user(self, path = '/user'):
+        self.headers = {'token': self.token}
+        response = req.Request(url = self.baseUrl + path, headers = self.headers)
+        resData = json.loads(response.data)
+        return resData
+
+
+    def reg1(self, phone, path = '/reg-1'):
+        load = {'phone': phone}
+        self.headers = {'content-type': 'application/json'}
+        response = req.post(url = self.baseUrl + path, data = json.dumps(load), headers = self.headers)
+        resData = json.loads(response.content)
+        print(resData.get('code'))
+        print(resData.get('message'))
+        return resData
+
+
+    def reg2(self, phone, validateCode, path = '/reg-2'):
+        load = {'phone': phone, 'validateCode':  validateCode}
+        self.headers = {'content-type': 'application/json'}
+        response = req.post(url=self.baseUrl + path, data=json.dumps(load), headers=self.headers)
+        resData = json.loads(response.content)
+        print(resData.get('message'))
+        return resData
+
+
+    def reg3(self, phone, password, confirm, paht = '/reg-3'):
+        load = {'phone': phone, 'password': password, 'confirm': confirm}
+        self.headers = {'content-type': 'application/json'}
+        response = req.post(url=self.baseUrl + path, data=json.dumps(load), headers=self.headers)
+        resData = json.loads(response.content)
+        print(resData.get('message'))
+        return resData
+
+
+if __name__ == '__main__':
+    api = Test_0_1()
+    user = api.login('13261593150', '800915')
+    print(user)
+
+    u = api.user()
+    print(u)

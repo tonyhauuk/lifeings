@@ -1,13 +1,15 @@
 from pymongo import MongoClient
+from app.key import Key
 
-with open('KEY', 'r') as f:
-    file = f.read()
 
-class Conn():
+password = Key.db
+
+
+class Conn:
     def connect(self):
-        self.client = MongoClient('123.56.71.98:27017')
+        self.client = MongoClient('123.56.71.98', 27017)
         db = self.client.lifeings
-        db.authenticate('lifeingsAdmin', file)
+        db.authenticate('lifeingsAdmin', password)
 
         return db
 

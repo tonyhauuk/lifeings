@@ -5,7 +5,7 @@ from app.util.error import getCode
 c = Conn()
 
 
-class Process():
+class Process:
     def __init__(self, db):
         self.db = db
 

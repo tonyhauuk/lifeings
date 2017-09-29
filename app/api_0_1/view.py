@@ -27,6 +27,18 @@ def loginCheck(func):
     return decorator
 
 
+@api.before_request
+def before_request():
+    token = request.headers.get('token')
+    phone = 'DB request get'
+
+    if phone:
+        g.token = token
+        g.phone = phone
+
+    return
+
+
 # Login
 @api.route('/login', methods=['POST'])
 def login():
