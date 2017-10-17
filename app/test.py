@@ -12,7 +12,7 @@ import urllib.request as req
 from app.util.models import Process
 import pprint
 from app.util.error import getCode
-
+from flask import g, current_app
 
 
 
@@ -148,6 +148,14 @@ def setUpdate():
     #print(p.find(data , 'User'))
 
 
+def ttdmn(str = 'Xiao Ke'):
+    if str == '':
+        print('Nothing')
+    else:
+        print(str)
+
+    pprint.pprint(time.time())
+
 def comfirmd():
     phone = '13261593150'
     data = {'mobile': phone}
@@ -233,6 +241,11 @@ def getJson():
 def getDBVersion():
     db = c.connect()
     print(db.version)
+
+
+def test222():
+    import sys
+    print(sys.path)
 
 #if __name__ == '__main__':
 
@@ -328,7 +341,7 @@ class Test_0_1(object):
         return resData
 
 
-    def reg3(self, phone, password, confirm, paht = '/reg-3'):
+    def reg3(self, phone, password, confirm,  path = '/reg-3'):
         load = {'phone': phone, 'password': password, 'confirm': confirm}
         self.headers = {'content-type': 'application/json'}
         response = req.post(url=self.baseUrl + path, data=json.dumps(load), headers=self.headers)

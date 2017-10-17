@@ -1,4 +1,4 @@
-class Key():
+class Key:
 
     db = 'a9270ae592bd52cceb7e7736a434506d'
     flask = 'ZYXWVUTSRQPONMLKJIHGFEDCBA1234567890'
