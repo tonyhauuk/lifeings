@@ -1,4 +1,4 @@
-# -*-coding:UTF-8-*-
+# -*- coding:utf-8 -*-
 from app.util.connect import Conn
 from app.util.error import getCode
 
@@ -9,7 +9,6 @@ class Process:
     def __init__(self, db):
         self.db = db
 
-
     def insert(self, data, collection = None):
         if collection != None:
             coll = self.getCol(collection)
@@ -17,14 +16,11 @@ class Process:
         else:
             return getCode(2)
 
-
     def delete(self):
         pass
 
-
     def update(self):
         pass
-
 
     def setUpdate(self, data, setter, collection = None):
         if collection != None:
@@ -37,8 +33,6 @@ class Process:
         else:
             return getCode(2)
 
-
-
     def find(self, data, collection = None):
         if collection != None:
             coll = self.getCol(collection)
@@ -47,7 +41,6 @@ class Process:
             return result
         else:
             return getCode(2)
-
 
     def findByCondition(self, data, condition, collection = None):
         if collection != None:
@@ -58,14 +51,12 @@ class Process:
         else:
             return getCode(2)
 
-
     # Get collection name
     def getCol(self, collection):
         db = self.db
         name = db.get_collection(collection)
 
         return name
-
 
     def checkExistUser(self, phone):
         db = self.db
@@ -80,5 +71,3 @@ class Process:
         c.close()
 
         return result
-
-

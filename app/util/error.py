@@ -4,8 +4,9 @@ import time
 from flask import jsonify
 
 
-def getCode(code, ts = str(round(time.time()))):
+def getCode(code):
     if code == 0:
+        ts = str(round(time.time()))
         obj = {'code': 0, 'message': 'success', 'date': ts}
         jsonStr = jsonify(obj)
         return jsonStr
@@ -53,12 +54,12 @@ def getCode(code, ts = str(round(time.time()))):
     elif code == 9:
         obj = {'code': 9, 'message': 'password length must be over 6 numbers including letters'}
         jsonStr = jsonify(obj)
-        return  jsonStr
+        return jsonStr
 
     elif code == 10:
         obj = {'code': 10, 'message': 'password must be consistent'}
         jsonStr = jsonify(obj)
-        return  jsonStr
+        return jsonStr
 
     elif code == 11:
         obj = {'code': 11, 'message': 'illegal parameter'}

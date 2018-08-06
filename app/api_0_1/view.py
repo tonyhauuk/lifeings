@@ -11,7 +11,6 @@ import time
 import random
 import hashlib
 
-
 app = Flask(__name__)
 c = Conn()
 
@@ -24,6 +23,7 @@ def loginCheck(func):
             return getCode(3)
 
         return func(*args, **kwargs)
+
     return decorator
 
 
@@ -40,7 +40,7 @@ def before_request():
 
 
 # Login
-@api.route('/login', methods=['POST'])
+@api.route('/login', methods = ['POST'])
 def login():
     db = c.connect()
     try:
@@ -81,25 +81,24 @@ def login():
 
 
 # Upload avatar
-@api.route('/set-avatar', methods=['POST'])
+@api.route('/set-avatar', methods = ['POST'])
 @loginCheck
 def setAvatar():
     avatar = request.get_json().get('avatar')
     user = g.current_user
     user.avatar = avatar
     try:
-        pass    # db commit
+        pass  # db commit
     except Exception as e:
         print(e)
         return getCode(8)
-        
 
     # db commit photo upload
     return getCode(0)
 
 
 # Send sms
-@api.route('/reg-1', methods=['POST'])
+@api.route('/reg-1', methods = ['POST'])
 def sendSMS():
     phone = str(request.get_json().get('phone'))
     index = phone.find('1')
@@ -117,7 +116,6 @@ def sendSMS():
     except KeyError:
         c.close()
         confirm, isValidate = -1, -1
-
 
     if confirm == 1 or isValidate == 1:
         return getCode(13)
@@ -140,7 +138,7 @@ def sendSMS():
 
 
 # Receive sms & validate sms
-@api.route('/reg-2', methods=['POST'])
+@api.route('/reg-2', methods = ['POST'])
 def receiveSMS():
     phone = request.get_json().get('phone')
     validateCode = request.get_json().get('validate')
@@ -161,7 +159,7 @@ def receiveSMS():
         currentTime = round(time.time())
 
         if confirm == 1:
-            return getCode(13) # exist
+            return getCode(13)  # exist
 
         recvTime = querySms(phone)
         st = time.strptime(recvTime, "%Y-%m-%d %H:%M:%S")
@@ -173,10 +171,10 @@ def receiveSMS():
             results = Process(db).setUpdate(data, setter, 'User')
             result = results['updatedExisting']
 
-            if result: # true or false
+            if result:  # true or false
                 return getCode(0)
             else:
-                return  getCode(3)
+                return getCode(3)
         else:
             return getCode(3)
     except:
@@ -186,7 +184,7 @@ def receiveSMS():
 
 
 # Commit password
-@api.route('/reg-3', methods=['POST'])
+@api.route('/reg-3', methods = ['POST'])
 def commitPasswd():
     phone = request.get_json().get('phone')
     password = request.get_json().get('password')
@@ -194,7 +192,6 @@ def commitPasswd():
 
     if len(password) < 6:
         return getCode(9)
-        
 
     if password != confirm:
         return getCode(10)
@@ -215,7 +212,7 @@ def commitPasswd():
 
         setter = {'password': password, 'token': token, 'nickname': phone}
         results = Process(db).setUpdate(data, setter, 'User')
-        result = results['updatedExisting']
+        result = results['updatedExisting']  # return True or False ?
 
         if not result:
             return getCode(4)

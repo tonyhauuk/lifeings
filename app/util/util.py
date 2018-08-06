@@ -2,6 +2,7 @@
 import urllib
 import urllib.request as req
 
+
 def sendSms(mobile, verify):
     data = {}
     data['mobile'] = mobile
@@ -13,6 +14,7 @@ def sendSms(mobile, verify):
     result = ret.decode('utf-8')
 
     return result
+
 
 def querySms(mobile):
     data = {}

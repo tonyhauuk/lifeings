@@ -9,16 +9,15 @@ import time
 import json
 import urllib
 import urllib.request as req
-from app.util.models import Process
+#from app.util.models import Process
 import pprint
 from app.util.error import getCode
 from flask import g, current_app
 
-
-
 c = Conn()
-p = Process(c.connect())
+#p = Process(c.connect())
 app = Flask(__name__)
+
 
 def checkExistUser1():
     db = c.connect()
@@ -27,9 +26,9 @@ def checkExistUser1():
     isExist = user.find_one({'mobile': n})
 
     s = p.getCol('User').find_one()
-    #print(s)
+    # print(s)
     pprint.pprint(s)
-    #print(isExist)
+    # print(isExist)
 
 
     if isExist is None:
@@ -41,6 +40,7 @@ def checkExistUser1():
 
     return result
 
+
 def getCol1(collection = None):
     if collection == None:
         return 2
@@ -51,22 +51,21 @@ def getCol1(collection = None):
         return name
 
 
-
 def insert1():
     c.connect()
     ss = "{'userName': 'wangxiao','userID':1,'email': 'wangxiao@estarinfo.net','mobile': '13261593150','password': '800915'," \
          "'birthday': '','city': 'Beijing', 'token': 'q938479r8uasfijda8shd9f8a9sdfha','expire': 1505121083000}"
     sql = json.dumps(ss)
-    coll =  p.getCol('User')
+    coll = p.getCol('User')
     r = coll.insert(sql)
     print('ret status:  ' + r)
     c.close()
 
+
 def ran():
-    #r = random.randint(1000, 10000)
+    # r = random.randint(1000, 10000)
     r = uuid.uuid1()
     print(r)
-
 
 
 def send():
@@ -93,6 +92,7 @@ def querySms(mobile):
 
     print(result)
 
+
 def time2str():
     time1 = "2017-09-18 14:52:21"
     st = time.strptime(time1, "%Y-%m-%d %H:%M:%S")
@@ -116,13 +116,15 @@ def getType():
 
         print(type(obj))
 
+
 def findfind():
     name = p.getCol('User')
     phone = '13261593150'
     dates = {'mobile': phone}
-    condition =  {'verification': 1, '_id': 0}
+    condition = {'verification': 1, '_id': 0}
     value = p.findByCondition(dates, condition, 'User')
     print(value['verification'])
+
 
 def findStrIndex():
     m = '13811300140'
@@ -130,22 +132,21 @@ def findStrIndex():
     print(n)
 
 
-
 def setUpdate():
     data = {'mobile': '13261593150'}
     set = {'birthday': 1}
     coll = p.getCol('User')
     result = coll.update(data, {'$set': set})
-    #result = result['updatedExisting']
+    # result = result['updatedExisting']
 
     if result:
         pprint.pprint(result)
     elif not result:
         print(2)
 
-    #print(result)
+        # print(result)
 
-    #print(p.find(data , 'User'))
+        # print(p.find(data , 'User'))
 
 
 def ttdmn(str = 'Xiao Ke'):
@@ -156,14 +157,13 @@ def ttdmn(str = 'Xiao Ke'):
 
     pprint.pprint(time.time())
 
+
 def comfirmd():
     phone = '13261593150'
     data = {'mobile': phone}
     condition = {'isValidate': 1, '_id': 0}
     info = p.findByCondition(data, condition, 'User')
     isValidate = info['isValidate']
-
-
 
     if isValidate != 1:
         return getCode(11)
@@ -175,19 +175,22 @@ def insert111():
     validate = '5599'
     phone = '13811300144'
     obj = {'verification': validate, 'mobile': phone}
-    #data = jsonify(obj)
+    # data = jsonify(obj)
     p.insert(obj, 'User')
 
-    #pprint.pprint(p.find({'mobile': phone}, 'User'))
+    # pprint.pprint(p.find({'mobile': phone}, 'User'))
     try:
         data = {'mobile': phone}
         condition = {'isValidate': 1, '_id': 0}
         info = p.findByCondition(data, condition, 'User')
         isValidate = info['isValidate']
+
+        print(isValidate)
     except KeyError as e:
         print('mei you')
 
-        #print(isValidate)
+        # print(isValidate)
+
 
 def findInfos():
     """
@@ -196,6 +199,7 @@ def findInfos():
     """
     r = p.find({'mobile': '13261593150'}, 'User')
     pprint.pprint(r)
+
 
 def test1():
     a = 'sdfsdfsdfsdf'
@@ -217,26 +221,28 @@ def calc():
 
 
 def trycatch():
-    #r = 1
-    try :
+    # r = 1
+    try:
         r = 899
         with open('!KEY', 'r') as f:
             file = f.read()
 
     except Exception as e:
         y = 0
-        #r = 5
+        # r = 5
         print(r)
-        #r = 7
+        # r = 7
 
     t = 2 * 4
-    #print(r)
+    # print(r)
+
 
 @app.route('/json')
 def getJson():
     msg = getCode(2)
-   #print(type(msg))
+    # print(type(msg))
     return str(type(msg))
+
 
 def getDBVersion():
     db = c.connect()
@@ -247,64 +253,86 @@ def test222():
     import sys
     print(sys.path)
 
-#if __name__ == '__main__':
 
+@app.route('/news/<type>')
+def aliyunNews(type):
+    import urllib, sys
+    import urllib.request as req
 
-    #getDBVersion()
+    host = 'http://toutiao-ali.juheapi.com'
+    path = '/toutiao/index'
+    method = 'GET'
+    appcode = 'a83eacc1602943b692756e63248bb8ff'
+    query = 'type=' + type
+    bodys = {}
+    url = host + path + '?' + query
+
+    request = req.Request(url)
+    request.add_header('Authorization', 'APPCODE ' + appcode)
+    response = req.urlopen(request)
+    content = response.read()
+
+    if (content):
+        print(content)
+
+    # if __name__ == '__main__':
+
+    # getDBVersion()
     pass
+
     s = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     s = s[::-1]
     print(s)
 
-    #app.run(debug=True, host='0.0.0.0', port=5001)
+    # app.run(debug=True, host='0.0.0.0', port=5001)
 
     # data2 = json.loads('http://localhost:5001/json')
     # print('code :' + data2['code'])
-    #trycatch()
-    #calc()
-    #test3()
-    #print(test2())
-    #findInfos()
+    # trycatch()
+    # calc()
+    # test3()
+    # print(test2())
+    # findInfos()
 
-    #setUpdate()
-    #findfind()
-    #findStrIndex()
-    #getType()
-    #time2str()
-    #send()
+    # setUpdate()
+    # findfind()
+    # findStrIndex()
+    # getType()
+    # time2str()
+    # send()
 
-    #querySms(13261593150)
+    # querySms(13261593150)
 
     #
     # if not name:
     #     print('not null')
     # else:
     #     print('is null')
-    #time = datetime.datetime.now().strftime('%Y%m%d')
-    #print(time)
+    # time = datetime.datetime.now().strftime('%Y%m%d')
+    # print(time)
 
-    #send()
-    #a = c.connect().City.find_one()
-   # print(a)
-    #ran()
-   #insert()
-    #checkExistUser1()
-    #connect()
-    #r = checkExistUser()
-   # print(r)
-    #print(comfirmd())
-    #insert111()
+    # send()
+    # a = c.connect().City.find_one()
+    # print(a)
+    # ran()
+    # insert()
+    # checkExistUser1()
+    # connect()
+    # r = checkExistUser()
+    # print(r)
+    # print(comfirmd())
+    # insert111()
+
+
 import json
 
 
 class Test_0_1(object):
     baseUrl = 'http://localhost:5001/api/v0.1'
 
-
     def __init__(self):
         self.headers = {}
         self.token = None
-
 
     def login(self, phone, password, path = '/login'):
         load = {'phone': phone, 'password': password}
@@ -314,13 +342,11 @@ class Test_0_1(object):
         self.token = resData.get('token')
         return resData
 
-
     def user(self, path = '/user'):
         self.headers = {'token': self.token}
         response = req.Request(url = self.baseUrl + path, headers = self.headers)
         resData = json.loads(response.data)
         return resData
-
 
     def reg1(self, phone, path = '/reg-1'):
         load = {'phone': phone}
@@ -331,29 +357,128 @@ class Test_0_1(object):
         print(resData.get('message'))
         return resData
 
-
     def reg2(self, phone, validateCode, path = '/reg-2'):
-        load = {'phone': phone, 'validateCode':  validateCode}
+        load = {'phone': phone, 'validateCode': validateCode}
         self.headers = {'content-type': 'application/json'}
-        response = req.post(url=self.baseUrl + path, data=json.dumps(load), headers=self.headers)
-        resData = json.loads(response.content)
+        response = req.post(url = self.baseUrl + path, data = json.dumps(load), headers = self.headers)
+        resData = json.loads(response.data)
         print(resData.get('message'))
         return resData
 
-
-    def reg3(self, phone, password, confirm,  path = '/reg-3'):
+    def reg3(self, phone, password, confirm, path = '/reg-3'):
         load = {'phone': phone, 'password': password, 'confirm': confirm}
         self.headers = {'content-type': 'application/json'}
-        response = req.post(url=self.baseUrl + path, data=json.dumps(load), headers=self.headers)
+        response = req.post(url = self.baseUrl + path, data = json.dumps(load), headers = self.headers)
         resData = json.loads(response.content)
         print(resData.get('message'))
         return resData
 
 
 if __name__ == '__main__':
+    '''
     api = Test_0_1()
     user = api.login('13261593150', '800915')
     print(user)
 
     u = api.user()
     print(u)
+    '''
+
+from flask import Flask
+
+app = Flask(__name__)
+
+
+@app.route('/news/<type>')
+def aliyunNews(type):
+    import urllib, sys
+    import urllib.request as req
+    import json
+
+    host = 'http://toutiao-ali.juheapi.com'
+    path = '/toutiao/index'
+    method = 'GET'
+    appcode = 'a83eacc1602943b692756e63248bb8ff'
+    query = 'type=' + type
+    bodys = {}
+    url = host + path + '?' + query
+
+    try:
+        request = req.Request(url)
+        request.add_header('Authorization', 'APPCODE ' + appcode)
+        response = req.urlopen(request)
+        content = response.read()
+        return content
+
+        # load = {'type': type}
+        #
+        # response = req.Request(url=host + path, data=json.dumps(load), headers={'Authorization': 'APPCODE ' + appcode})
+        # resData = json.loads(response.data)
+        # return resData
+
+
+    except Exception as e:
+        print(e)
+
+
+def flatten(nested):
+    for sublist in nested:
+        for element in sublist:
+            # print(element)
+            yield  element
+
+
+def flatten1(nested):
+    try:
+        for sublist in nested:
+            for element in flatten1(sublist):
+                print(element)
+                #yield element
+    except TypeError:
+        print(1)
+
+
+def flatten2(nested):
+    try:
+        nested + ''
+    except TypeError:
+        pass
+    for sublist in nested:
+        for element in flatten(nested):
+            yield element
+
+
+def simpleGenerator():
+    yield 1
+
+
+
+
+
+def testStr():
+    s = 'sdfsdfsd'
+    t = ('select'
+         'from'
+         'where')
+    print(t)
+
+
+
+def test_log():
+    import logging as LOG
+
+    LOG.basicConfig(level = LOG.INFO, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%a, %d %b %Y %H:%M:%S',
+                    filename='./test.log',
+                    filemode='w')
+    LOG.debug('This is a debug message')
+    LOG.info('This is a info message')
+    LOG.warning('This is a warning message')
+
+
+
+if __name__ == '__main__':
+    a = [[2, 6, 10, -3], [0, 1, 2, 3], [90]]
+    #simpleGenerator()
+    test_log()
+    # app.run(debug=True, host='localhost', port=5001)
